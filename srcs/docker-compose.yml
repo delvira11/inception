@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  nginx:
+    build: srcs/requirements/nginx/Dockerfile
+      image: my_nginx
+      ports:
+        - 443:443
+      restart: unless-stopped
+      volumes:
+        - html:/var/www/html
+      depends_on:
+        - wordpress
+  
+  wordpress:
+    build: srcs/requirements/wordpress/Dockerfile
+      image: my_wordpress
+      restart: unless-stopped
+      volumes:
+        - html:/var/www/html
+      depends_on:
+        - mariadb
+  mariadb:
+    build: srcs/requirements/mariadb/Dockerfile
+      image: my_mariadb
+      restart: unless-stopped
+      volumes:
+        - mysql:/var/lib/mysql
+        env_file:
+          - .env
+
+volumes:
+  html:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./srcs/requirements/tools/html
+
+  mysql:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./srcs/requirements/tools/mysql
