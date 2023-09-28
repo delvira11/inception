@@ -1,5 +1,14 @@
 all:
-	sudo docker-compose -f ./srcs/docker-compose.yml up --build
+	mkdir /home/delvira-/data/database
+	mkdir /home/delvira-/data/html
+	docker-compose -f ./srcs/docker-compose.yml up -d --build
 
 down:
-	sudo docker-compose -f ./srcs/docker-compose.yml stop
+	rm -r /home/delvira-/data/database
+	rm -r /home/delvira-/data/html
+	docker system prune
+	docker-compose -f ./srcs/docker-compose.yml down
+
+re: down all
+
+.PHONY: all down re
